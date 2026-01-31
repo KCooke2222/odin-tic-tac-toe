@@ -96,44 +96,49 @@ const DomController = (() => {
   const resetBtn = document.querySelector("#reset");
   const statusDiv = document.querySelector("#status");
 
+  boardDiv.addEventListener("click", (e) => {
+    const pos = e.target.closest(".pos");
+    if (!pos) return;
+
+    const row = Number(pos.dataset.row);
+    const col = Number(pos.dataset.col);
+
+    if (GameController.playTurn(row, col)) {
+      const state = GameController.getState();
+
+      if (state.gameState === "win") {
+        statusDiv.textContent = `Win: ${state.currentP.name}`;
+      } else if (state.gameState === "tie") {
+        statusDiv.textContent = "Tie";
+      } else {
+        statusDiv.textContent = `${state.currentP.name}'s turn`;
+      }
+
+      displayBoard();
+    }
+  });
+
   const displayBoard = () => {
     boardDiv.textContent = "";
-    board = Gameboard.getBoard();
+    const board = Gameboard.getBoard();
 
     for (let i = 0; i < board.length; i++) {
-      for (let j = 0; j < board[0].length; j++) {
-        let pos = document.createElement("div");
+      for (let j = 0; j < board[i].length; j++) {
+        const pos = document.createElement("div");
         pos.className = "pos";
         pos.dataset.row = i;
         pos.dataset.col = j;
-        pos.textContent = board[i][j];
-
+        pos.textContent = board[i][j] ?? "";
         boardDiv.appendChild(pos);
-        pos.addEventListener("click", (e) => {
-          const pos = e.target;
-          const row = pos.dataset.row;
-          const col = pos.dataset.col;
-
-          if (GameController.playTurn(row, col)) {
-            const gameState = GameController.getState();
-            if (gameState.gameState) {
-              statusDiv.textContent =
-                gameState.gameState + " " + gameState.currentP.name;
-            } else {
-              statusDiv.textContent = "";
-            }
-            DomController.displayBoard();
-          }
-        });
       }
     }
-
-    resetBtn.addEventListener("click", (e) => {
-      statusDiv.textContent = "";
-      GameController.resetGame();
-      DomController.displayBoard();
-    });
   };
+
+  resetBtn.addEventListener("click", (e) => {
+    statusDiv.textContent = "";
+    GameController.resetGame();
+    DomController.displayBoard();
+  });
 
   return { displayBoard };
 })();
