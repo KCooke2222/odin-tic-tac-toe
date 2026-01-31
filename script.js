@@ -135,7 +135,7 @@ const DomController = (() => {
   };
 
   resetBtn.addEventListener("click", (e) => {
-    statusDiv.textContent = "";
+    statusDiv.textContent = "p1's turn";
     GameController.resetGame();
     DomController.displayBoard();
   });
@@ -144,6 +144,3 @@ const DomController = (() => {
 })();
 
 DomController.displayBoard();
-// Next add player and game controler
-// reset game
-// then add dom
